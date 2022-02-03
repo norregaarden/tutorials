@@ -56,7 +56,9 @@ Try to figure out what happens.
 -- 0003
 example (a b c : ℝ) : a * (b * c) = b * (a * c) :=
 begin
-  sorry
+  rw ← mul_assoc,
+  rw mul_comm a b,
+  rw mul_assoc,
 end
 
 /-
@@ -87,7 +89,10 @@ And the next one can use:
 -- 0004
 example (a b c d : ℝ) (hyp : c = b*a - d) (hyp' : d = a*b) : c = 0 :=
 begin
-  sorry
+  rw hyp' at hyp,
+  rw mul_comm b a at hyp,
+  rw sub_self (a*b) at hyp,
+  exact hyp,
 end
 
 /-
@@ -122,7 +127,10 @@ Let's return to the other example using this method.
 -- 0005
 example (a b c d : ℝ) (hyp : c = b*a - d) (hyp' : d = a*b) : c = 0 :=
 begin
-  sorry
+  calc c  = b*a - d     : by { rw hyp }
+  ...     = b*a - a*b   : by { rw hyp' }
+  ...     = a*b - a*b   : by { rw mul_comm }
+  ...     = 0           : by { rw sub_self (a*b) },
 end
 
 /-
@@ -149,7 +157,7 @@ Of course we can use `ring` outside of `calc`. Let's do the next one in one line
 -- 0006
 example (a b c : ℝ) : a * (b * c) = b * (a * c) :=
 begin
-  sorry
+  ring,
 end
 
 /-
@@ -159,7 +167,7 @@ This is too much fun. Let's do it again.
 -- 0007
 example (a b : ℝ) : (a + b) + a = 2*a + b :=
 begin
-  sorry
+  ring,
 end
 
 /-
@@ -176,7 +184,17 @@ add_zero a : a + 0 = a
 -- 0008
 example (a b : ℝ) : (a + b)*(a - b) = a^2 - b^2 :=
 begin
-  sorry
+  rw pow_two,
+  rw pow_two,
+  rw mul_sub,
+  rw add_mul,
+  rw add_mul,
+  rw ← add_sub,
+  rw ← sub_sub,
+  rw mul_comm b a,
+  rw sub_self,
+  rw add_sub,
+  rw add_zero,
 end
 
 /- Let's stick to ring in the end. -/
